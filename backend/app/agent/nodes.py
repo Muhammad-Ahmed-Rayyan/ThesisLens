@@ -164,3 +164,79 @@ No markdown, no explanation, just the JSON array."""),
         "current_step": "analyze_gaps",
         "steps_completed": state["steps_completed"] + ["detect_relationships"],
     }
+
+# ── Node 5: Analyze Gaps ───────────────────────────────────────────────────────
+def analyze_gaps(state: AgentState) -> AgentState:
+    papers = state["filtered_papers"]
+    topic = state["user_input"]
+
+    papers_text = "\n".join([
+        f"- {p['title']}: {p['abstract'][:300]}"
+        for p in papers
+    ])
+
+    messages = [
+        SystemMessage(content="""You are a research strategist identifying gaps in a field.
+Given a topic and a set of recent papers, identify:
+1. 3-5 research gaps (questions the field hasn't answered)
+2. 5 novel research questions a new researcher could pursue
+Return as JSON: {"gaps": ["...", ...], "research_questions": ["...", ...]}
+JSON only, no markdown."""),
+        HumanMessage(content=f"Topic: {topic}\n\nPapers:\n{papers_text}"),
+    ]
+
+    response = llm.invoke(messages)
+    try:
+        parsed = json.loads(response.content.strip())
+        gaps_text = "\n".join([f"• {g}" for g in parsed.get("gaps", [])])
+        questions = parsed.get("research_questions", [])
+    except json.JSONDecodeError:
+        gaps_text = response.content
+        questions = []
+
+    return {
+        **state,
+        "gap_analysis": gaps_text,
+        "research_questions": questions,
+        "current_step": "generate_report",
+        "steps_completed": state["steps_completed"] + ["analyze_gaps"],
+    }
+
+
+# ── Node 6: Generate State of Field Report ─────────────────────────────────────
+def generate_report(state: AgentState) -> AgentState:
+    papers = state["filtered_papers"]
+    topic = state["user_input"]
+
+    papers_summary = "\n".join([
+        f"- [{p['published'][:4]}] {p['title']} by {', '.join(p['authors'][:2])}"
+        for p in papers
+    ])
+
+    # Extract key authors
+    from collections import Counter
+    all_authors = []
+    for p in papers:
+        all_authors.extend(p["authors"][:3])
+    top_authors = [{"name": a, "count": c} for a, c in Counter(all_authors).most_common(5)]
+
+    messages = [
+        SystemMessage(content="""You are a research synthesis expert.
+Write a "State of the Field" report in 3 sections:
+1. What's Solved (established results, consensus methods)
+2. What's Contested (active debates, conflicting findings)  
+3. What's Open (unsolved problems, future directions)
+Be specific and cite paper titles when relevant. Write in academic but accessible prose.
+Keep the full report under 600 words."""),
+        HumanMessage(content=f"Topic: {topic}\n\nPapers:\n{papers_summary}\n\nGaps identified:\n{state['gap_analysis']}"),
+    ]
+
+    response = llm.invoke(messages)
+
+    return {
+        **state,
+        "state_of_field": response.content,
+        "key_authors": top_authors,
+        "current_step": "complete",
+        "steps_completed": state["steps_completed"] + ["generate_report"],
+    }
