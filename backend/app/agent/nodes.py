@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -14,6 +15,16 @@ llm = ChatGroq(
     temperature=0.1,
 )
 
+def call_llm_with_retry(messages, retries=3, wait=15):
+    for attempt in range(retries):
+        try:
+            return llm.invoke(messages)
+        except Exception as e:
+            if "rate_limit_exceeded" in str(e) and attempt < retries - 1:
+                print(f"Rate limit hit, waiting {wait}s before retry {attempt + 1}...")
+                time.sleep(wait)
+            else:
+                raise
 
 def is_arxiv_url(text: str) -> bool:
     return "arxiv.org" in text
@@ -46,7 +57,7 @@ def plan_search(state: AgentState) -> AgentState:
         SystemMessage(content="You are a research assistant. Given a research topic, generate an optimal ArXiv search query — concise, using technical terminology, no more than 10 words. Return ONLY the query string, nothing else."),
         HumanMessage(content=f"Topic: {user_input}"),
     ]
-    response = llm.invoke(messages)
+    response = call_llm_with_retry(messages)
     query = response.content.strip().strip('"')
 
     return {
@@ -82,7 +93,7 @@ def filter_relevance(state: AgentState) -> AgentState:
     # Build a batch prompt — send all abstracts at once to save API calls
     papers_text = ""
     for i, p in enumerate(papers):
-        papers_text += f"\n[{i}] Title: {p['title']}\nAbstract: {p['abstract'][:400]}\n"
+        papers_text += f"\n[{i}] Title: {p['title']}\nAbstract: {p['abstract'][:200]}\n"
 
     messages = [
         SystemMessage(content="""You are a research relevance scorer. 
@@ -93,7 +104,7 @@ No explanation, no markdown, just the JSON array."""),
         HumanMessage(content=f"Topic: {topic}\n\nPapers:{papers_text}"),
     ]
 
-    response = llm.invoke(messages)
+    response = call_llm_with_retry(messages)
 
     try:
         scores = json.loads(response.content.strip())
@@ -128,7 +139,7 @@ def detect_relationships(state: AgentState) -> AgentState:
     # Build a condensed representation
     papers_text = ""
     for i, p in enumerate(papers):
-        papers_text += f"\n[{i}] ID:{p['arxiv_id']} | {p['title']}\nAbstract snippet: {p['abstract'][:300]}\n"
+        papers_text += f"\n[{i}] ID:{p['arxiv_id']} | {p['title']}\nAbstract snippet: {p['abstract'][:150]}\n"
 
     messages = [
         SystemMessage(content="""You are a research graph builder.
@@ -140,7 +151,7 @@ No markdown, no explanation, just the JSON array."""),
         HumanMessage(content=f"Papers:{papers_text}"),
     ]
 
-    response = llm.invoke(messages)
+    response = call_llm_with_retry(messages)
 
     edges = []
     try:
@@ -185,7 +196,7 @@ JSON only, no markdown."""),
         HumanMessage(content=f"Topic: {topic}\n\nPapers:\n{papers_text}"),
     ]
 
-    response = llm.invoke(messages)
+    response = call_llm_with_retry(messages)
     try:
         parsed = json.loads(response.content.strip())
         gaps_text = "\n".join([f"• {g}" for g in parsed.get("gaps", [])])
@@ -231,7 +242,7 @@ Keep the full report under 600 words."""),
         HumanMessage(content=f"Topic: {topic}\n\nPapers:\n{papers_summary}\n\nGaps identified:\n{state['gap_analysis']}"),
     ]
 
-    response = llm.invoke(messages)
+    response = call_llm_with_retry(messages)
 
     return {
         **state,
