@@ -9,13 +9,13 @@ from app.agent.graph import agent
 router = APIRouter(prefix="/api/research", tags=["research"])
 
 STEP_MESSAGES = {
-    "plan_search": "🔍 Planning search strategy...",
-    "fetch_papers": "📚 Fetching papers from ArXiv...",
-    "filter_relevance": "🎯 Filtering for relevance...",
-    "detect_relationships": "🕸️ Detecting relationships between papers...",
-    "analyze_gaps": "🔬 Analyzing research gaps...",
-    "generate_report": "📝 Generating State of the Field report...",
-    "complete": "✅ Analysis complete!",
+    "plan_search": "Planning search strategy...",
+    "fetch_papers": "Fetching papers from ArXiv...",
+    "filter_relevance": "Filtering for relevance...",
+    "detect_relationships": "Detecting relationships between papers...",
+    "analyze_gaps": "Analyzing research gaps...",
+    "generate_report": "Generating State of the Field report...",
+    "complete": "Analysis complete!",
 }
 
 
