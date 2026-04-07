@@ -5,6 +5,7 @@
 .env.test.local
 .env.production.local
 *.env
+backend/.env
 
 # Python
 __pycache__/
@@ -24,6 +25,8 @@ build/
 .coverage
 htmlcov/
 .tox/
+*.so
+*.dylib
 
 # Node / Frontend
 node_modules/
@@ -38,6 +41,8 @@ dist-ssr/
 .next/
 out/
 .cache/
+frontend/node_modules/
+frontend/dist/
 
 # IDE / Editors
 .vscode/
@@ -45,7 +50,6 @@ out/
 *.swp
 *.swo
 *~
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
@@ -73,9 +77,23 @@ logs/
 .temp/
 tmp/
 
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Testing
+coverage/
+.nyc_output/
+
 # Build artifacts
-*.pyc
-*.pyo
-*.so
-*.dylib
 *.dll
+
+# Debug
+*.log
+debug.log
