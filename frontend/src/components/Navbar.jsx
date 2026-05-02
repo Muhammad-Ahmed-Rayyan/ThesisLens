@@ -1,10 +1,29 @@
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', onScroll);
+    onScroll();
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-subtle bg-page-bg/90 backdrop-blur-sm">
+    <header
+      className={`sticky top-0 z-50 h-16 border-b transition-all duration-300 ${
+        isScrolled
+          ? 'border-[#3b434c] bg-[#0d1117]/95 backdrop-blur-md'
+          : 'border-[#30363d] bg-[#0d1117]/80 backdrop-blur-sm'
+      }`}
+    >
       <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-between px-6">
         <Link
           to="/"

@@ -76,7 +76,7 @@ export default function ReportPanel({ result }) {
       </div>
 
       {/* Tab Content */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="custom-scrollbar flex-1 overflow-y-auto p-6">
         {activeTab === 'field' && (
           <div className="prose prose-invert prose-amber max-w-none">
             <article 

@@ -393,7 +393,7 @@ export default function KnowledgeGraph({ papers = [], relationships = [] }) {
 
         {/* Selected Node Detail Panel */}
         {selectedNode && (
-          <div className="absolute top-0 right-0 w-80 h-full bg-card-bg border-l border-gray-700 p-6 overflow-y-auto animate-slide-in-right">
+          <div className="custom-scrollbar absolute top-0 right-0 w-80 h-full bg-card-bg border-l border-gray-700 p-6 overflow-y-auto animate-slide-in-right">
             <div className="flex items-start justify-between mb-4">
               <h4 className="font-serif text-lg font-semibold text-text-primary">
                 Paper Details

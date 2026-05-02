@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 const FEATURES = [
   {
@@ -57,11 +59,122 @@ const FEATURES = [
   },
 ];
 
+const STATS = [
+  { key: 'steps', value: 6, suffix: '', label: 'Agent Steps', animated: true },
+  { key: 'papers', value: 15, suffix: '+', label: 'Papers Analyzed Per Query', animated: true },
+  { key: 'gaps', value: '3–5', label: 'Research Gaps Identified', animated: false },
+  { key: 'open', value: '100%', label: 'Free & Open Source', animated: false },
+];
+
+const USE_CASES = [
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+        <path d="M6 12v5c3 3 9 3 12 0v-5" />
+      </svg>
+    ),
+    title: 'The Student',
+    description:
+      "Entering a new research area for your thesis? ThesisLens maps the entire landscape in minutes — showing you what's settled, what's debated, and where your contribution could live.",
+    tag: 'Thesis Research',
+  },
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 18h8" />
+        <path d="M3 22h18" />
+        <path d="M14 22a7 7 0 1 0 0-14h-1" />
+        <path d="M9 14h2" />
+        <path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z" />
+        <path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3" />
+      </svg>
+    ),
+    title: 'The Researcher',
+    description:
+      'Doing a literature review before a new project? Skip the manual paper-by-paper reading. Get a structured State of the Field report with gap analysis instantly.',
+    tag: 'Literature Reviews',
+  },
+  {
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+        <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+        <path d="M12 2v2" />
+        <path d="M12 22v-2" />
+        <path d="m17 20.66-1-1.73" />
+        <path d="M11 10.27 7 3.34" />
+        <path d="m20.66 17-1.73-1" />
+        <path d="m3.34 7 1.73 1" />
+        <path d="M14 12h8" />
+        <path d="M2 12h2" />
+        <path d="m20.66 7-1.73 1" />
+        <path d="m3.34 17 1.73-1" />
+        <path d="m17 3.34-1 1.73" />
+        <path d="m11 13.73-4 6.93" />
+      </svg>
+    ),
+    title: 'The Engineer',
+    description:
+      "Evaluating the research landscape before building an AI system? Understand which techniques are proven, which are contested, and what novel approaches haven't been tried.",
+    tag: 'Technical Due Diligence',
+  },
+];
+
 export default function LandingPage() {
   const navigate = useNavigate();
+  const statsRef = useRef(null);
+  const [statsInView, setStatsInView] = useState(false);
+  const [counts, setCounts] = useState({ steps: 0, papers: 0 });
+
+  useEffect(() => {
+    const target = statsRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!statsInView) return;
+
+    let frameId;
+    const duration = 1500;
+    const start = performance.now();
+    const easeOutCubic = (t) => 1 - (1 - t) ** 3;
+
+    const animate = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = easeOutCubic(progress);
+
+      setCounts({
+        steps: Math.round(6 * eased),
+        papers: Math.round(15 * eased),
+      });
+
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(animate);
+      }
+    };
+
+    frameId = window.requestAnimationFrame(animate);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [statsInView]);
 
   return (
     <div className="text-text-primary">
+      <Navbar />
+
       <section className="hero-bg relative overflow-hidden border-b border-subtle">
         <div className="hero-overlay absolute inset-0 pointer-events-none" />
         <div className="relative z-10 min-h-[calc(100vh-64px)] px-6">
@@ -105,6 +218,73 @@ export default function LandingPage() {
                 <div className="mb-4 text-accent-amber">{feature.icon}</div>
                 <h3 className="mb-2 text-lg font-semibold text-text-primary">{feature.name}</h3>
                 <p className="text-sm leading-relaxed text-text-secondary">{feature.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section ref={statsRef} className="bg-[#161b22] py-20">
+        <div className="mx-auto w-full max-w-7xl px-6">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
+              ThesisLens by the Numbers
+            </h2>
+            <div className="mx-auto mt-4 h-[2px] w-[60px] bg-[#c9a84c]" />
+          </div>
+
+          <div className="mt-12 grid grid-cols-2 gap-y-8 md:grid-cols-4">
+            {STATS.map((stat, index) => (
+              <div
+                key={stat.key}
+                className={`px-4 text-center ${index < 3 ? 'md:border-r md:border-gray-700' : ''}`}
+              >
+                <div
+                  className={`font-display text-5xl font-bold text-[#c9a84c] transition-all duration-700 ${
+                    statsInView ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+                  }`}
+                >
+                  {stat.animated
+                    ? `${counts[stat.key]}${stat.suffix}`
+                    : stat.value}
+                </div>
+                <p className="mt-3 text-xs font-medium uppercase tracking-[0.14em] text-[#8b949e] md:text-sm">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#0d1117] py-20">
+        <div className="mx-auto w-full max-w-7xl px-6">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
+              Built for Curious Minds
+            </h2>
+            <div className="mx-auto mt-4 h-[2px] w-[60px] bg-[#c9a84c]" />
+            <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-text-secondary md:text-lg">
+              Whether you&apos;re entering a new field or going deep into one — ThesisLens accelerates your research.
+            </p>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {USE_CASES.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-lg border border-subtle border-t-2 border-t-[#c9a84c] bg-[#1c2128] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-t-[#e0bc6a]"
+              >
+                <div className="leading-none text-accent-amber">{item.icon}</div>
+                <h3 className="mt-5 font-display text-2xl font-semibold text-text-primary">
+                  {item.title}
+                </h3>
+                <p className="mt-4 text-base leading-relaxed text-text-secondary">
+                  {item.description}
+                </p>
+                <span className="mt-6 inline-flex rounded-full border border-[#c9a84c] bg-transparent px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#c9a84c]">
+                  {item.tag}
+                </span>
               </article>
             ))}
           </div>
