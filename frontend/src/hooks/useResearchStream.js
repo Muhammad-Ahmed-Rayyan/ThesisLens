@@ -5,6 +5,10 @@ export function useResearchStream() {
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const apiBaseUrl =
+    typeof window === "undefined"
+      ? "http://localhost:8000"
+      : `http://${window.location.hostname}:8000`;
 
   const runAnalysis = useCallback(async (input, maxPapers = 12) => {
     setSteps([]);
@@ -13,7 +17,7 @@ export function useResearchStream() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/research/analyze/stream", {
+      const response = await fetch(`${apiBaseUrl}/api/research/analyze/stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input, max_papers: maxPapers }),
@@ -47,7 +51,7 @@ export function useResearchStream() {
       setError(err.message);
       setIsLoading(false);
     }
-  }, []);
+  }, [apiBaseUrl]);
 
   return { steps, result, isLoading, error, runAnalysis };
 }

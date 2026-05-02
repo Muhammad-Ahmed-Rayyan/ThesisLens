@@ -1,20 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-card: #1c2128;
+  --accent-gold: #c9a84c;
+  --accent-gold-bright: #e0bc6a;
+  --text-primary: #e6edf3;
+  --text-muted: #8b949e;
+  --border-subtle: #30363d;
+}
+
 @theme {
-  --color-page-bg: #0f1419;
-  --color-card-bg: #1a1f29;
-  --color-accent-amber: #d4a574;
-  --color-accent-sage: #8ba888;
-  --color-text-primary: #e8e6e3;
-  --color-text-secondary: #9ca3af;
-  
-  --font-family-serif: 'Crimson Pro', serif;
-  --font-family-sans: 'Source Sans 3', sans-serif;
+  --color-page-bg: var(--bg-primary);
+  --color-secondary: var(--bg-secondary);
+  --color-card: var(--bg-card);
+  --color-card-bg: var(--bg-card);
+  --color-accent-amber: var(--accent-gold);
+  --color-accent-amber-bright: var(--accent-gold-bright);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-muted);
+  --color-border-subtle: var(--border-subtle);
+
+  --font-family-serif: 'Playfair Display', serif;
+  --font-family-sans: 'DM Sans', sans-serif;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--color-page-bg);
     color: var(--color-text-primary);
@@ -25,6 +42,27 @@
   
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-family-serif);
+  }
+}
+
+@layer components {
+  .hero-bg {
+    background-color: var(--bg-primary);
+    background-image: radial-gradient(circle, #30363d 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .hero-overlay {
+    background: radial-gradient(ellipse at center, transparent 40%, #0d1117 100%);
+  }
+
+  .feature-card {
+    transition: transform 200ms ease, border-color 200ms ease;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-left-color: var(--accent-gold-bright);
   }
 }
 

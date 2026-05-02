@@ -117,10 +117,12 @@ cp .env.example .env    # macOS/Linux
 # GROQ_API_KEY=your_actual_key_here
 
 # Start the backend server
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8000
 ```
 
-Backend will run on: **http://localhost:8000**
+Backend will run on:
+- **Local:** `http://localhost:8000`
+- **Mobile (same Wi-Fi):** `http://<your-computer-ip>:8000`
 
 ### 3. Frontend Setup
 
@@ -135,13 +137,15 @@ npm install
 npm run dev
 ```
 
-Frontend will run on: **http://localhost:5173**
+Frontend will run on:
+- **Local:** `http://localhost:5173`
+- **Mobile (same Wi-Fi):** `http://<your-computer-ip>:5173`
 
 ---
 
 ## 🎯 Usage
 
-1. **Open your browser** to `http://localhost:5173`
+1. **Open your browser** to `http://localhost:5173` (or `http://<your-computer-ip>:5173` on mobile)
 2. **Enter a research topic** (e.g., "transformer neural networks") or **ArXiv URL**
 3. **Click "Analyze Research"**
 4. **Watch the AI agent work** through 6 steps:
@@ -176,7 +180,7 @@ GROQ_API_KEY=your_groq_api_key_here
 
 ### Frontend Configuration
 
-- **API URL**: `http://localhost:8000` (hardcoded for development)
+- **API URL**: auto-uses the current page hostname on port `8000` (works for localhost and LAN IP)
 - **Max Papers**: 5, 8, 12, 15, or 20 (configurable in UI)
 
 ---
