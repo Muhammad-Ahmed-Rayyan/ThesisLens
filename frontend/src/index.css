@@ -64,6 +64,10 @@
     transform: translateY(-4px);
     border-left-color: var(--accent-gold-bright);
   }
+
+  .font-display {
+    font-family: 'Playfair Display', serif;
+  }
 }
 
 @layer utilities {
