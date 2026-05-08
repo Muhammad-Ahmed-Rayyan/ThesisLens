@@ -1,4 +1,5 @@
 import arxiv
+import time
 from dataclasses import dataclass
 from typing import Optional
 
@@ -20,18 +21,24 @@ def fetch_papers(query: str, max_results: int = 15) -> list[Paper]:
     Fetch papers from ArXiv given a search query.
     Returns a list of Paper dataclass instances.
     """
-    client = arxiv.Client()
+    capped = min(max_results, 25)  # never request more than 25
+
+    client = arxiv.Client(
+        page_size=capped,
+        delay_seconds=3,
+        num_retries=3,
+    )
 
     search = arxiv.Search(
         query=query,
-        max_results=max_results,
+        max_results=capped,
         sort_by=arxiv.SortCriterion.Relevance,
     )
 
     papers = []
     for result in client.results(search):
         paper = Paper(
-            arxiv_id=result.entry_id.split("/")[-1],  # e.g. "2301.07041v2"
+            arxiv_id=result.entry_id.split("/")[-1],
             title=result.title.strip(),
             abstract=result.summary.strip(),
             authors=[str(a) for a in result.authors],
@@ -50,14 +57,14 @@ def fetch_paper_by_url(arxiv_url: str) -> Optional[Paper]:
     Fetch a single paper by its ArXiv URL.
     Handles both abstract URLs and PDF URLs.
     """
-    # Extract the ID from various URL formats:
-    # https://arxiv.org/abs/2301.07041
-    # https://arxiv.org/pdf/2301.07041
     arxiv_id = arxiv_url.rstrip("/").split("/")[-1]
-    # Strip version suffix if present for search (e.g. 2301.07041v2 -> 2301.07041)
     base_id = arxiv_id.split("v")[0]
 
-    client = arxiv.Client()
+    client = arxiv.Client(
+        page_size=1,
+        delay_seconds=3,
+        num_retries=3,
+    )
     search = arxiv.Search(id_list=[base_id])
 
     for result in client.results(search):
