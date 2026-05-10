@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import PageTransition from '../components/PageTransition';
 
 const FEATURES = [
   {
@@ -126,6 +127,11 @@ export default function LandingPage() {
   const statsRef = useRef(null);
   const [statsInView, setStatsInView] = useState(false);
   const [counts, setCounts] = useState({ steps: 0, papers: 0 });
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const handleNavigate = () => {
+    setIsTransitioning(true);
+  };
 
   useEffect(() => {
     const target = statsRef.current;
@@ -173,7 +179,7 @@ export default function LandingPage() {
 
   return (
     <div className="text-text-primary">
-      <Navbar />
+      <Navbar onLaunch={handleNavigate} />
 
       <section className="hero-bg relative overflow-hidden border-b border-subtle">
         <div className="hero-overlay absolute inset-0 pointer-events-none" />
@@ -193,7 +199,7 @@ export default function LandingPage() {
 
             <button
               type="button"
-              onClick={() => navigate('/research')}
+              onClick={handleNavigate}
               className="mt-10 inline-flex items-center gap-2 rounded-lg border border-accent-amber bg-transparent px-6 py-3 text-sm font-semibold tracking-wide text-accent-amber transition-colors hover:bg-accent-amber hover:text-page-bg"
             >
               Start Exploring
@@ -290,6 +296,10 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {isTransitioning && (
+        <PageTransition onComplete={() => navigate('/research')} />
+      )}
     </div>
   );
 }

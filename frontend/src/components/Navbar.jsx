@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export default function Navbar() {
-  const navigate = useNavigate();
+export default function Navbar({ onLaunch }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -34,7 +33,7 @@ export default function Navbar() {
 
         <button
           type="button"
-          onClick={() => navigate('/research')}
+          onClick={onLaunch}
           className="rounded-lg border border-accent-amber px-4 py-2 text-sm font-semibold text-accent-amber transition-colors hover:bg-accent-amber hover:text-page-bg"
         >
           Launch Research
