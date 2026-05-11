@@ -1,71 +1,81 @@
-# ThesisLens 🔬
+<div align="center">
+  <img src="https://github.com/Muhammad-Ahmed-Rayyan/ThesisLens/blob/main/ThesisLens.png" width="500">
+  
+  #
+  
+  <p><b>AI Research Intelligence Agent with Interactive Knowledge Graph Visualization</b></p>
 
-**AI Research Intelligence Agent** — Automatically search, analyze, and synthesize academic research papers from ArXiv with interactive knowledge graph visualization.
+![Last Commit](https://img.shields.io/github/last-commit/Muhammad-Ahmed-Rayyan/ThesisLens)
+![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
+![React](https://img.shields.io/badge/React-19%2B-61DAFB?logo=react)
+![languages](https://img.shields.io/github/languages/count/Muhammad-Ahmed-Rayyan/ThesisLens)
 
-![ThesisLens](https://img.shields.io/badge/Status-Active-success)
-![Python](https://img.shields.io/badge/Python-3.11+-blue)
-![React](https://img.shields.io/badge/React-18+-61DAFB)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688)
-![LangGraph](https://img.shields.io/badge/LangGraph-Latest-purple)
-![D3.js](https://img.shields.io/badge/D3.js-7+-orange)
+<br>
 
----
+Built with the tools and technologies:
 
-## 🌟 Features
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-%2361DAFB.svg?style=for-the-badge&logo=react&logoColor=black)
+![LangGraph](https://img.shields.io/badge/LangGraph-6A0DAD?style=for-the-badge&logo=python&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq-F55036?style=for-the-badge&logo=groq&logoColor=white)
+![D3.js](https://img.shields.io/badge/D3.js-%23F9A03C.svg?style=for-the-badge&logo=d3dotjs&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-- **🔍 Intelligent Search** — Search by research topic or ArXiv URL
-- **🎯 Smart Filtering** — AI-powered relevance filtering
-- **🕸️ Interactive Knowledge Graph** — D3.js force-directed visualization of paper relationships
-- **🔬 Gap Analysis** — Identify research gaps in the field
-- **📊 Field Overview** — Generate comprehensive state-of-the-field reports
-- **❓ Research Questions** — AI-suggested research directions
-- **👥 Key Authors** — Track influential researchers
-- **⚡ Real-time Updates** — Live agent progress visualization with streaming
-
----
-
-## 🏗️ Architecture
-
-### Backend (FastAPI + LangGraph + Groq)
-- **FastAPI** — High-performance async API
-- **LangGraph** — Agentic workflow orchestration
-- **Groq** — Ultra-fast LLM inference (Llama 3.1)
-- **ArXiv API** — Academic paper database
-
-### Frontend (React + Vite + Tailwind CSS + D3.js)
-- **React 18** — Modern UI with hooks
-- **Vite** — Lightning-fast dev server
-- **Tailwind CSS v4** — Utility-first styling
-- **D3.js** — Interactive force-directed graph visualization
-- **Server-Sent Events (SSE)** — Real-time streaming
+</div>
 
 ---
 
-## 📁 Project Structure
+## 🧠 Project Summary
 
-```
+**ThesisLens** is an AI-powered research intelligence agent that automates the discovery and synthesis of academic literature. It leverages a **LangGraph**-orchestrated multi-step agent pipeline to fetch papers from **ArXiv**, filter them for relevance, map relationships, identify research gaps, and generate comprehensive field reports — all surfaced through a sleek, interactive **React** frontend with a **D3.js** force-directed knowledge graph.
+
+---
+
+## 🚀 Features
+
+- 🔍 **Intelligent Search** — Search by research topic or ArXiv URL with AI-powered relevance filtering
+- 🕸️ **Interactive Knowledge Graph** — D3.js force-directed visualization mapping relationships between papers
+- 🔬 **Gap Analysis** — Automatically identifies unexplored areas and blind spots in the research field
+- 📊 **Field Overview** — AI-generated state-of-the-field synthesis reports
+- ❓ **Research Questions** — Suggested directions for future research
+- 👥 **Key Authors** — Track and rank the most influential researchers
+- ⚡ **Real-Time Streaming** — Live agent progress updates via Server-Sent Events (SSE)
+- 🌀 **Cinematic Transitions** — Fullscreen loading sequence before entering the research workspace
+
+---
+
+## 🗃️ Project Structure
+
+```bash
 ThesisLens/
 ├── backend/
 │   ├── app/
-│   │   ├── agent/          # LangGraph agent workflow
-│   │   ├── routers/        # FastAPI routes
-│   │   ├── services/       # ArXiv API integration
-│   │   └── main.py         # FastAPI app entry
-│   ├── .env.example        # Environment template
-│   └── requirements.txt    # Python dependencies
+│   │   ├── agent/              # LangGraph agent workflow
+│   │   ├── routers/            # FastAPI routes
+│   │   ├── services/           # ArXiv API integration
+│   │   └── main.py             # FastAPI app entry point
+│   ├── .env.example            # Environment variable template
+│   └── requirements.txt        # Python dependencies
 │
 ├── frontend/
 │   ├── src/
-│   │   ├── components/     # React components
-│   │   │   ├── SearchBar.jsx
+│   │   ├── components/         # Shared UI components
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Footer.jsx
 │   │   │   ├── AgentProgress.jsx
 │   │   │   ├── PaperCard.jsx
 │   │   │   ├── ReportPanel.jsx
 │   │   │   ├── KeyAuthors.jsx
-│   │   │   └── KnowledgeGraph.jsx  # D3.js visualization
-│   │   ├── hooks/          # Custom hooks (SSE stream)
-│   │   ├── App.jsx         # Main app component
-│   │   └── index.css       # Tailwind styles
+│   │   │   ├── KnowledgeGraph.jsx   # D3.js visualization
+│   │   │   └── PageTransition.jsx   # Route transition overlay
+│   │   ├── pages/
+│   │   │   ├── LandingPage.jsx
+│   │   │   └── ResearchPage.jsx
+│   │   ├── hooks/
+│   │   │   └── useResearchStream.js
+│   │   ├── App.jsx             # Router and app shell
+│   │   ├── main.jsx
+│   │   └── index.css           # Tailwind styles + theme tokens
 │   ├── index.html
 │   ├── package.json
 │   └── tailwind.config.js
@@ -75,13 +85,9 @@ ThesisLens/
 
 ---
 
-## 🚀 Getting Started
+## 🔧 Setup & Installation
 
-### Prerequisites
-
-- **Python 3.11+**
-- **Node.js 18+**
-- **Groq API Key** ([Get it here](https://console.groq.com/keys))
+> Make sure **Python 3.11+** and **Node.js 18+** are installed on your system.
 
 ### 1. Clone the Repository
 
@@ -93,13 +99,11 @@ cd ThesisLens
 ### 2. Backend Setup
 
 ```bash
-# Navigate to backend
 cd backend
 
-# Create virtual environment
+# Create and activate virtual environment
 python -m venv venv
 
-# Activate virtual environment
 # Windows:
 venv\Scripts\activate
 # macOS/Linux:
@@ -108,21 +112,15 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Create .env file
-copy .env.example .env  # Windows
-# or
-cp .env.example .env    # macOS/Linux
-
-# Add your Groq API key to .env
-# GROQ_API_KEY=your_actual_key_here
+# Set up environment variables
+copy .env.example .env    # Windows
+cp .env.example .env      # macOS/Linux
 
 # Start the backend server
 uvicorn app.main:app --reload --port 8000
 ```
 
-Backend will run on:
-- **Local:** `http://localhost:8000`
-- **Mobile (same Wi-Fi):** `http://<your-computer-ip>:8000`
+Backend will run on `http://localhost:8000`
 
 ### 3. Frontend Setup
 
@@ -137,59 +135,68 @@ npm install
 npm run dev
 ```
 
-Frontend will run on:
-- **Local:** `http://localhost:5173`
-- **Mobile (same Wi-Fi):** `http://<your-computer-ip>:5173`
+Frontend will run on `http://localhost:5173`
 
 ---
 
-## 🎯 Usage
+## 🔑 API Configuration
 
-1. **Open your browser** to `http://localhost:5173` (or `http://<your-computer-ip>:5173` on mobile)
-2. **Enter a research topic** (e.g., "transformer neural networks") or **ArXiv URL**
-3. **Click "Analyze Research"**
-4. **Watch the AI agent work** through 6 steps:
-   - 🔍 Planning search strategy
-   - 📚 Fetching papers from ArXiv
-   - 🎯 Filtering for relevance
-   - 🕸️ Detecting relationships
-   - 🔬 Analyzing research gaps
-   - 📝 Generating report
-5. **Explore results**:
-   - **Interactive Knowledge Graph**: 
-     - Visualize paper relationships in a force-directed network
-     - Nodes sized by connection count, colored by research category
-     - Drag nodes to rearrange, scroll to zoom, pan to explore
-     - Click nodes to see full details in side panel
-     - Hover edges to see relationship types (extends, contradicts, related, replicates)
-   - **Papers List**: Browse papers with abstracts and PDF downloads
-   - **State of the Field**: Read AI-generated field overview report
-   - **Research Gaps**: Review identified gaps in current research
-   - **Research Questions**: Discover potential research directions
-   - **Key Authors**: See influential researchers ranked by paper count
+### ⚙️ Environment Variables — `backend/.env`
 
----
-
-## 🔧 Configuration
-
-### Backend Environment Variables
+Add your Groq API key to the `.env` file:
 
 ```env
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-### Frontend Configuration
-
-- **API URL**: auto-uses the current page hostname on port `8000` (works for localhost and LAN IP)
-- **Max Papers**: 5, 8, 12, 15, or 20 (configurable in UI)
+Obtain your key from the [Groq Console](https://console.groq.com/keys).
 
 ---
 
-## 📊 API Endpoints
+## 📊 Agent Pipeline
+
+The LangGraph agent processes your query through **6 sequential steps**:
+
+| Step | Action |
+|------|--------|
+| 🔍 Step 1 | Plan search strategy |
+| 📚 Step 2 | Fetch papers from ArXiv |
+| 🎯 Step 3 | Filter for relevance |
+| 🕸️ Step 4 | Detect paper relationships |
+| 🔬 Step 5 | Analyze research gaps |
+| 📝 Step 6 | Generate field report |
+
+---
+
+## 🕸️ Knowledge Graph
+
+The interactive D3.js knowledge graph provides a visual representation of paper relationships.
+
+### Graph Interactions
+- **Zoom & Pan** — Scroll to zoom, drag the background to pan
+- **Drag Nodes** — Reposition any paper node freely
+- **Click Nodes** — View full paper details in a side panel
+- **Hover Edges** — See relationship types between connected papers
+
+### Visual Encoding
+
+| Visual Property | Meaning |
+|---|---|
+| Node Size | Connection count (larger = more connections) |
+| Node Color | Research category (cs.LG, cs.CV, cs.AI, etc.) |
+| 🔵 Blue solid edge | extends |
+| 🔴 Red solid edge | contradicts |
+| ⚪ Gray dashed edge | related |
+| 🟢 Green solid edge | replicates |
+| Edge Thickness | Confidence score |
+
+---
+
+## 📡 API Reference
 
 ### `POST /api/research/analyze/stream`
 
-Analyzes research papers and returns results via Server-Sent Events (SSE).
+Analyzes research papers and streams results via SSE.
 
 **Request Body:**
 ```json
@@ -199,9 +206,7 @@ Analyzes research papers and returns results via Server-Sent Events (SSE).
 }
 ```
 
-**Response Stream:**
-
-Progress events:
+**Progress Event:**
 ```json
 {
   "type": "progress",
@@ -211,7 +216,7 @@ Progress events:
 }
 ```
 
-Final result:
+**Final Result:**
 ```json
 {
   "type": "result",
@@ -225,73 +230,23 @@ Final result:
 ```
 
 ### `GET /health`
-
 Health check endpoint.
-
----
-
-## 🎨 Design Philosophy
-
-**Academic Journal Aesthetic**
-- Sophisticated dark theme with deep charcoal backgrounds
-- Typography: Crimson Pro (serif) + Source Sans 3 (sans-serif)
-- Color palette: Warm amber and sage green accents
-- Clean, scannable layouts inspired by academic journals
 
 ---
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
+|-------|------------|
 | **Backend Framework** | FastAPI |
 | **Agent Orchestration** | LangGraph |
 | **LLM Provider** | Groq (Llama 3.1 8B Instant) |
 | **Paper Database** | ArXiv API |
-| **Frontend Framework** | React 18 |
+| **Frontend Framework** | React 19 |
 | **Build Tool** | Vite |
 | **Styling** | Tailwind CSS v4 |
 | **Visualization** | D3.js v7 (Force-Directed Graph) |
-| **Real-time Communication** | Server-Sent Events (SSE) |
-
----
-
-## 🎨 Knowledge Graph Features
-
-The interactive knowledge graph provides a visual representation of research paper relationships:
-
-### **Graph Interactions**
-- **Zoom & Pan** — Scroll to zoom, drag background to pan
-- **Drag Nodes** — Click and drag papers to reposition
-- **Click Nodes** — View detailed paper information in side panel
-- **Hover Effects** — See tooltips and highlight connected papers
-
-### **Visual Encoding**
-- **Node Size** — Larger nodes have more connections (20-40px radius)
-- **Node Color** — Color-coded by research category (cs.LG, cs.CV, cs.AI, etc.)
-- **Edge Color** — Relationship type:
-  - 🔵 Blue solid = **extends**
-  - 🔴 Red solid = **contradicts**
-  - ⚪ Gray dashed = **related**
-  - 🟢 Green solid = **replicates**
-- **Edge Thickness** — Higher confidence = thicker lines
-
-### **Graph Physics**
-- Force-directed layout with natural node positioning
-- Collision detection prevents node overlap
-- Interactive dragging updates simulation in real-time
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+| **Real-Time Comms** | Server-Sent Events (SSE) |
 
 ---
 
@@ -301,16 +256,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🙏 Acknowledgments
-
-- **ArXiv** for providing open access to scientific papers
-- **Groq** for ultra-fast LLM inference
-- **LangGraph** for agent orchestration framework
-- **FastAPI** for the excellent Python web framework
-- **D3.js** for powerful data visualization capabilities
-
----
-
 <div align="center">
-  <p>⭐ Star this repo if you find it useful!</p>
+
+⭐ Help the project grow by giving it a star!
+
 </div>

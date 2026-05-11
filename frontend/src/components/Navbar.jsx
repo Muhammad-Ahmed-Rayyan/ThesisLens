@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import thesisLensLogo from '../assets/Thesislens.png';
 
 export default function Navbar({ onLaunch }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,8 +27,13 @@ export default function Navbar({ onLaunch }) {
       <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-between px-6">
         <Link
           to="/"
-          className="font-display text-2xl font-semibold tracking-tight text-text-primary"
+          className="inline-flex items-center gap-2 font-display text-2xl font-semibold tracking-tight text-text-primary"
         >
+          <img
+            src={thesisLensLogo}
+            alt="ThesisLens logo"
+            className="h-8 w-8 rounded object-cover"
+          />
           ThesisLens
         </Link>
 
