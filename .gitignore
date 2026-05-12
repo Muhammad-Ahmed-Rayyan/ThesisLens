@@ -43,6 +43,9 @@ out/
 .cache/
 frontend/node_modules/
 frontend/dist/
+frontend/.env.production
+frontend/.env.development
+frontend/.env
 
 # IDE / Editors
 .vscode/

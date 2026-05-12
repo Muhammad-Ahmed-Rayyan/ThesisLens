@@ -5,10 +5,7 @@ export function useResearchStream() {
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const apiBaseUrl =
-    typeof window === "undefined"
-      ? "http://localhost:8000"
-      : `http://${window.location.hostname}:8000`;
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
   const runAnalysis = useCallback(async (input, maxPapers = 12) => {
     setSteps([]);
