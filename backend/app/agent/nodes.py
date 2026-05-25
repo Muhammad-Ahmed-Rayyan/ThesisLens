@@ -15,14 +15,22 @@ llm = ChatGroq(
     temperature=0.1,
 )
 
-def call_llm_with_retry(messages, retries=3, wait=15):
+def call_llm_with_retry(messages, retries=4, wait=20):
     for attempt in range(retries):
         try:
             return llm.invoke(messages)
         except Exception as e:
-            if "rate_limit_exceeded" in str(e) and attempt < retries - 1:
-                print(f"Rate limit hit, waiting {wait}s before retry {attempt + 1}...")
-                time.sleep(wait)
+            error_str = str(e)
+            if "rate_limit_exceeded" in error_str or "429" in error_str:
+                if attempt < retries - 1:
+                    # Extract wait time from error message if available
+                    import re
+                    match = re.search(r'try again in (\d+\.?\d*)s', error_str)
+                    actual_wait = float(match.group(1)) + 2 if match else wait
+                    print(f"Groq rate limit, waiting {actual_wait}s... (attempt {attempt + 1})")
+                    time.sleep(actual_wait)
+                else:
+                    raise
             else:
                 raise
 
@@ -54,7 +62,20 @@ def plan_search(state: AgentState) -> AgentState:
 
     # For topic input, use LLM to refine into a good ArXiv query
     messages = [
-        SystemMessage(content="You are a research assistant. Given a research topic, generate an optimal ArXiv search query — concise, using technical terminology, no more than 10 words. Return ONLY the query string, nothing else."),
+    SystemMessage(content="""You are a research assistant. Given a research topic, generate an optimal ArXiv keyword search query.
+
+    Rules:
+    - Use ONLY plain keywords — absolutely no category filters like arXiv:cs.AI or arXiv:stat.ML
+    - No special syntax, no colons, no brackets, just natural search terms
+    - Between 4-8 words maximum
+    - Focus on specific technical terminology
+    - Return ONLY the query string, nothing else, no quotes, no explanation
+
+    Examples:
+    Topic: Artificial Intelligence -> deep learning neural networks survey techniques
+    Topic: Machine Learning -> supervised learning algorithms classification optimization
+    Topic: Computer Vision -> convolutional neural networks image recognition features
+    Topic: NLP -> transformer language models text classification attention"""),
         HumanMessage(content=f"Topic: {user_input}"),
     ]
     response = call_llm_with_retry(messages)

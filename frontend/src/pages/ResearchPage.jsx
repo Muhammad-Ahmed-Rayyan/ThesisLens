@@ -153,16 +153,24 @@ export default function ResearchPage() {
       </section>
 
       {error && (
-        <div className="mx-auto mb-8 max-w-2xl rounded-lg border border-red-700 bg-red-900/20 p-6">
-          <div className="flex items-start gap-3">
-            <svg className="h-6 w-6 flex-shrink-0 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div>
-              <h2 className="mb-2 font-display text-lg font-semibold text-red-400">
-                Analysis Error
-              </h2>
-              <p className="text-text-secondary">{error}</p>
+        <div className="mt-8 rounded-lg border border-red-800/50 bg-red-950/20 p-6">
+          <div className="flex items-start gap-4">
+            <div className="mt-0.5 flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="mb-1 font-semibold text-red-400">Analysis Failed</h3>
+              <p className="text-sm text-red-300/80">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-3 text-xs text-red-400 underline underline-offset-2 hover:text-red-300"
+              >
+                Try again
+              </button>
             </div>
           </div>
         </div>

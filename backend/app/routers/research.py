@@ -107,7 +107,22 @@ async def analyze_stream(request: dict):
             yield f"data: {json.dumps(result_event)}\n\n"
 
         except Exception as e:
-            error_event = {"type": "error", "message": str(e)}
+            error_str = str(e)
+
+            if "429" in error_str and "arxiv" in error_str.lower():
+                user_message = "ArXiv is rate limiting requests. Please wait 30 seconds and try again."
+            elif "429" in error_str:
+                user_message = "AI service is busy (rate limit reached). Please wait 20-30 seconds and try again."
+            elif "503" in error_str:
+                user_message = "ArXiv servers are temporarily unavailable. Please try again in a minute."
+            elif "timeout" in error_str.lower():
+                user_message = "Request timed out. Please try again."
+            elif "rate_limit" in error_str.lower():
+                user_message = "AI service rate limit reached. Please wait 30 seconds and try again."
+            else:
+                user_message = "Analysis failed. Please try again with a different topic."
+
+            error_event = {"type": "error", "message": user_message}
             yield f"data: {json.dumps(error_event)}\n\n"
 
     return StreamingResponse(
