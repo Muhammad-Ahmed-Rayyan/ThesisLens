@@ -1,16 +1,18 @@
 import os
 import json
 import time
+from pathlib import Path
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
 from app.services.arxiv_service import fetch_papers, fetch_paper_by_url
 from app.agent.state import AgentState
 
-load_dotenv()
+# Load .env relative to this file so it works regardless of cwd when uvicorn starts
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent.parent / ".env")
 
 llm = ChatGroq(
-    model="llama-3.1-8b-instant",
+    model=os.getenv("GROQ_MODEL"),
     api_key=os.getenv("GROQ_API_KEY"),
     temperature=0.1,
 )

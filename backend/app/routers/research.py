@@ -52,7 +52,7 @@ async def get_papers(request: ResearchRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# ── Endpoint 2: Full agent with SSE streaming (new) ────────────────────────────
+# ── Endpoint 2: Full agent with SSE streaming ──────────────────────────────────
 @router.post("/analyze/stream")
 async def analyze_stream(request: dict):
     user_input = request.get("input", "")
@@ -76,9 +76,17 @@ async def analyze_stream(request: dict):
         }
 
         try:
+            # Accumulate state from the stream.
+            # CRITICAL FIX: Do NOT call agent.invoke() after agent.stream() —
+            # that would run the entire pipeline a second time and exhaust rate limits.
+            accumulated_state = {**initial_state}
+
             for step_output in agent.stream(initial_state):
                 node_name = list(step_output.keys())[0]
                 state_after = step_output[node_name]
+
+                # Merge each node's output into accumulated_state
+                accumulated_state.update(state_after)
 
                 message = STEP_MESSAGES.get(node_name, f"Running {node_name}...")
                 papers_count = len(state_after.get("filtered_papers", state_after.get("raw_papers", [])))
@@ -92,22 +100,23 @@ async def analyze_stream(request: dict):
                 yield f"data: {json.dumps(progress_event)}\n\n"
                 await asyncio.sleep(0.1)
 
-            final_state = agent.invoke(initial_state)
-
+            # Use the accumulated state from streaming — no second invocation needed
             result_event = {
                 "type": "result",
-                "papers": final_state["filtered_papers"],
-                "relationships": final_state["relationships"],
-                "gap_analysis": final_state["gap_analysis"],
-                "research_questions": final_state["research_questions"],
-                "state_of_field": final_state["state_of_field"],
-                "key_authors": final_state["key_authors"],
-                "search_query": final_state["search_query"],
+                "papers": accumulated_state.get("filtered_papers", []),
+                "relationships": accumulated_state.get("relationships", []),
+                "gap_analysis": accumulated_state.get("gap_analysis", ""),
+                "research_questions": accumulated_state.get("research_questions", []),
+                "state_of_field": accumulated_state.get("state_of_field", ""),
+                "key_authors": accumulated_state.get("key_authors", []),
+                "search_query": accumulated_state.get("search_query", ""),
             }
             yield f"data: {json.dumps(result_event)}\n\n"
 
         except Exception as e:
             error_str = str(e)
+            # Print full error to backend terminal for debugging
+            print(f"[ThesisLens ERROR] {type(e).__name__}: {error_str}")
 
             if "429" in error_str and "arxiv" in error_str.lower():
                 user_message = "ArXiv is rate limiting requests. Please wait 30 seconds and try again."
@@ -119,8 +128,10 @@ async def analyze_stream(request: dict):
                 user_message = "Request timed out. Please try again."
             elif "rate_limit" in error_str.lower():
                 user_message = "AI service rate limit reached. Please wait 30 seconds and try again."
+            elif "model_not_found" in error_str or "404" in error_str:
+                user_message = "AI model configuration error. Please check the backend settings."
             else:
-                user_message = "Analysis failed. Please try again with a different topic."
+                user_message = f"Analysis failed: {error_str[:200]}"
 
             error_event = {"type": "error", "message": user_message}
             yield f"data: {json.dumps(error_event)}\n\n"

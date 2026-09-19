@@ -147,6 +147,7 @@ Add your Groq API key to the `.env` file:
 
 ```env
 GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=openai/gpt-oss-120b
 ```
 
 Obtain your key from the [Groq Console](https://console.groq.com/keys).
@@ -240,7 +241,7 @@ Health check endpoint.
 |-------|------------|
 | **Backend Framework** | FastAPI |
 | **Agent Orchestration** | LangGraph |
-| **LLM Provider** | Groq (Llama 3.1 8B Instant) |
+| **LLM Provider** | Groq (openai/gpt-oss-120b via GROQ_MODEL env) |
 | **Paper Database** | ArXiv API |
 | **Frontend Framework** | React 19 |
 | **Build Tool** | Vite |
